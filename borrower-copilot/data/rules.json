@@ -1,0 +1,144 @@
+{
+  "bankingAssumptions": {
+    "minimumSurplusRatio": 0.15,
+    "minimumEmergencyMonths": 3,
+    "stressIncomeDrop": 0.2,
+    "stressRateRisePoints": 2,
+    "unknownCreditPenalty": 0.15,
+    "baselineLivingCostBuffer": 0.1,
+    "lenderRatioBuffer": 0.9
+  },
+  "foir": {
+    "salaried": 0.48,
+    "selfEmployed": 0.42,
+    "informal": 0.35,
+    "base": 0.4,
+    "securedComfort": 0.55
+  },
+  "creditBands": [
+    { "min": 750, "max": 900, "label": "Excellent", "rateAdjustment": -0.8 },
+    { "min": 700, "max": 749, "label": "Good", "rateAdjustment": -0.3 },
+    { "min": 650, "max": 699, "label": "Fair", "rateAdjustment": 0.4 },
+    { "min": 550, "max": 649, "label": "Weak", "rateAdjustment": 1.1 },
+    { "min": 300, "max": 549, "label": "Poor", "rateAdjustment": 1.8 }
+  ],
+  "incomeStability": {
+    "stable": 1,
+    "moderate": 0.88,
+    "volatile": 0.75,
+    "unknown": 0.8
+  },
+  "products": {
+    "personal_loan": {
+      "label": "Personal loan",
+      "secured": false,
+      "interestRateBand": { "min": 11.5, "max": 17.5 },
+      "processingFeePct": 1.8,
+      "maxTenureMonths": 72,
+      "defaultTenureMonths": 60,
+      "sanctionMultiplier": 1.1,
+      "riskWeight": 1.12,
+      "allowCollateral": false,
+      "preferredFor": "short-term, unsecured borrowing"
+    },
+    "home_loan": {
+      "label": "Home loan",
+      "secured": true,
+      "interestRateBand": { "min": 8.4, "max": 10.8 },
+      "processingFeePct": 0.5,
+      "maxTenureMonths": 240,
+      "defaultTenureMonths": 180,
+      "sanctionMultiplier": 1.6,
+      "riskWeight": 0.9,
+      "allowCollateral": true,
+      "preferredFor": "housing purchase or balance transfer"
+    },
+    "lap": {
+      "label": "Loan Against Property",
+      "secured": true,
+      "interestRateBand": { "min": 9.2, "max": 12.5 },
+      "processingFeePct": 1.2,
+      "maxTenureMonths": 180,
+      "defaultTenureMonths": 120,
+      "sanctionMultiplier": 1.5,
+      "riskWeight": 0.88,
+      "allowCollateral": true,
+      "preferredFor": "secured borrowing against property value"
+    },
+    "gold_loan": {
+      "label": "Gold loan",
+      "secured": true,
+      "interestRateBand": { "min": 7.2, "max": 10.4 },
+      "processingFeePct": 0.8,
+      "maxTenureMonths": 48,
+      "defaultTenureMonths": 36,
+      "sanctionMultiplier": 1.4,
+      "riskWeight": 0.8,
+      "allowCollateral": true,
+      "preferredFor": "short gold-backed borrowing"
+    },
+    "two_wheeler_loan": {
+      "label": "Two-wheeler loan",
+      "secured": false,
+      "interestRateBand": { "min": 9.8, "max": 15.4 },
+      "processingFeePct": 1.3,
+      "maxTenureMonths": 60,
+      "defaultTenureMonths": 48,
+      "sanctionMultiplier": 1.0,
+      "riskWeight": 1.02,
+      "allowCollateral": false,
+      "preferredFor": "vehicle purchase"
+    },
+    "business_loan": {
+      "label": "Business loan",
+      "secured": false,
+      "interestRateBand": { "min": 12.5, "max": 18.5 },
+      "processingFeePct": 1.9,
+      "maxTenureMonths": 84,
+      "defaultTenureMonths": 60,
+      "sanctionMultiplier": 1.15,
+      "riskWeight": 1.18,
+      "allowCollateral": true,
+      "preferredFor": "working-capital or business expansion"
+    }
+  },
+  "riskAdjustments": {
+    "recentEMIBounce": 0.7,
+    "highCostDebt": 0.82,
+    "unknownCreditScore": 0.86,
+    "incomeVolatility": 0.78,
+    "lowEmergencySavings": 0.85,
+    "largeUpcomingExpense": 0.8,
+    "coAppIncomeBoost": 0.12,
+    "collateralBoost": 0.12,
+    "businessProfitBoost": 0.08
+  },
+  "confidence": {
+    "base": 60,
+    "noCreditScorePenalty": 18,
+    "incompleteDataPenalty": 12,
+    "highVolatilityPenalty": 12,
+    "stableIncomeBonus": 10,
+    "knownDebtBonus": 8
+  },
+  "decisionThresholds": {
+    "borrowLessRatio": 0.8,
+    "doNotBorrowStressRatio": 0.65,
+    "minSafeResidualPercent": 0.12,
+    "highDebtRatio": 0.52,
+    "recentBounceCritical": true
+  },
+  "defaultQuestions": {
+    "reasons": {
+      "age": "Age affects eligibility, tenure risk and repayment capacity.",
+      "loanPurpose": "The purpose helps the tool judge whether the borrowing is productive or consumption-driven.",
+      "loanType": "Loan type changes the lender risk profile and the pricing range.",
+      "desiredLoanAmount": "The requested amount is the starting point for the sanction and affordability check.",
+      "netIncome": "Monthly net income is the base for affordability and FOIR-style capacity checks.",
+      "incomeType": "Income type affects the affordability assumptions and the stress test.",
+      "existingEMI": "Existing debt directly reduces the EMI capacity available for a new loan.",
+      "householdExpenses": "Living expenses must be met before any new EMI is affordable.",
+      "creditScore": "A known credit score improves confidence and narrows the fair-rate range."
+    }
+  }
+}

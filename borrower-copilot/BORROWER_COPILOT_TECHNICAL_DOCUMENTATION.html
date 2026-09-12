@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Borrower Copilot - Technical &amp; Functional Documentation</title>
+  <style>
+    :root { --ink:#252128; --muted:#706873; --accent:#6f315e; --accent-soft:#f4eaf1; --line:#e5dfe3; --paper:#fffdfa; --bg:#eee9e5; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--bg); color:var(--ink); font-family:Georgia, 'Times New Roman', serif; line-height:1.65; }
+    .toolbar { position:sticky; top:0; z-index:2; display:flex; justify-content:space-between; align-items:center; padding:14px max(24px, calc((100% - 1080px) / 2)); background:#211c22; color:#fff; font-family:Arial, sans-serif; }
+    .toolbar strong { letter-spacing:.02em; }
+    button { border:1px solid #d8cbd4; border-radius:5px; background:#fff; color:var(--accent); padding:9px 14px; cursor:pointer; font-weight:700; }
+    main { max-width:1080px; margin:34px auto; padding:64px 78px 90px; background:var(--paper); box-shadow:0 12px 45px rgba(45,31,40,.12); }
+    h1, h2, h3, h4 { color:var(--accent); line-height:1.2; margin:1.8em 0 .55em; }
+    h1 { font-size:2.45rem; margin-top:0; padding-bottom:22px; border-bottom:3px solid var(--accent); }
+    h2 { font-size:1.65rem; border-bottom:1px solid var(--line); padding-bottom:8px; break-after:avoid; }
+    h3 { font-size:1.22rem; }
+    h4 { font-size:1.05rem; }
+    p { margin:.65em 0; }
+    ul, ol { padding-left:1.5rem; }
+    li { margin:.2em 0; }
+    code { padding:2px 5px; border-radius:3px; background:#f1ecef; color:#5b234b; font-family:'Cascadia Code', Consolas, monospace; font-size:.9em; }
+    pre { overflow:auto; padding:18px; border-radius:6px; background:#27232a; color:#f7f1f5; line-height:1.45; break-inside:avoid; }
+    pre code { padding:0; background:transparent; color:inherit; }
+    blockquote { margin:1em 0; padding:8px 18px; border-left:4px solid var(--accent); background:var(--accent-soft); }
+    table { width:100%; margin:1.1em 0; border-collapse:collapse; font-size:.94rem; break-inside:avoid; }
+    th, td { padding:9px 11px; border:1px solid var(--line); text-align:left; vertical-align:top; }
+    th { background:var(--accent-soft); color:var(--accent); }
+    .mermaid { padding:18px; overflow:auto; border:1px solid var(--line); background:#fbf8fa; font-family:Consolas, monospace; white-space:pre-wrap; }
+    .error { padding:20px; color:#8b1d32; background:#fff0f2; border:1px solid #efb8c2; }
+    .loading { color:var(--muted); font-family:Arial, sans-serif; }
+    @media (max-width:760px) { main { margin:0; padding:34px 22px 60px; } h1 { font-size:1.9rem; } .toolbar { padding:12px 16px; } }
+    @media print { body { background:#fff; } .toolbar { display:none; } main { max-width:none; margin:0; padding:0; box-shadow:none; } h1 { font-size:24pt; } h2 { break-before:page; font-size:16pt; } a { color:inherit; text-decoration:none; } }
+  </style>
+</head>
+<body>
+  <div class="toolbar">
+    <strong>Borrower Copilot Documentation</strong>
+    <button type="button" onclick="window.print()">Print / Save as PDF</button>
+  </div>
+  <main id="document"><p class="loading">Loading documentation...</p></main>
+  <script>
+    const sourceFile = 'BORROWER_COPILOT_TECHNICAL_DOCUMENTATION.md';
+
+    function escapeHtml(value) {
+      return value.replace(/[&<>"']/g, (character) => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[character]));
+    }
+
+    function inlineMarkdown(value) {
+      let html = escapeHtml(value);
+      html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img alt="$1" src="$2">');
+      html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
+      html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+      html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+      html = html.replace(/__([^_]+)__/g, '<strong>$1</strong>');
+      html = html.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+      return html;
+    }
+
+    function renderTable(lines) {
+      const rows = lines.filter((line) => line.trim()).map((line) => line.trim().replace(/^\|/, '').replace(/\|$/, '').split('|').map((cell) => cell.trim()));
+      if (rows.length < 2) return lines.map((line) => `<p>${inlineMarkdown(line)}</p>`).join('');
+      const header = rows[0];
+      const body = rows.slice(2);
+      return `<table><thead><tr>${header.map((cell) => `<th>${inlineMarkdown(cell)}</th>`).join('')}</tr></thead><tbody>${body.map((row) => `<tr>${row.map((cell) => `<td>${inlineMarkdown(cell)}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
+    }
+
+    function renderMarkdown(markdown) {
+      const lines = markdown.replace(/^[-]# /, '# ').split(/\r?\n/);
+      const output = [];
+      let index = 0;
+      while (index < lines.length) {
+        const line = lines[index];
+        if (!line.trim()) { index += 1; continue; }
+        if (line.startsWith('```')) {
+          const language = line.slice(3).trim();
+          const block = [];
+          index += 1;
+          while (index < lines.length && !lines[index].startsWith('```')) { block.push(lines[index]); index += 1; }
+          index += 1;
+          output.push(language === 'mermaid' ? `<div class="mermaid">${escapeHtml(block.join('\n'))}</div>` : `<pre><code>${escapeHtml(block.join('\n'))}</code></pre>`);
+          continue;
+        }
+        if (/^\|.*\|$/.test(line) && index + 1 < lines.length && /^\|?\s*:?-+:?\s*(\|\s*:?-+:?\s*)+\|?$/.test(lines[index + 1])) {
+          const table = [line, lines[index + 1]]; index += 2;
+          while (index < lines.length && /^\|.*\|$/.test(lines[index])) { table.push(lines[index]); index += 1; }
+          output.push(renderTable(table));
+          continue;
+        }
+        const heading = line.match(/^(#{1,4})\s+(.+)$/);
+        if (heading) { output.push(`<h${heading[1].length}>${inlineMarkdown(heading[2])}</h${heading[1].length}>`); index += 1; continue; }
+        if (/^[-*]\s+/.test(line)) {
+          const items = [];
+          while (index < lines.length && /^[-*]\s+/.test(lines[index])) { items.push(`<li>${inlineMarkdown(lines[index].replace(/^[-*]\s+/, ''))}</li>`); index += 1; }
+          output.push(`<ul>${items.join('')}</ul>`); continue;
+        }
+        if (/^\d+\.\s+/.test(line)) {
+          const items = [];
+          while (index < lines.length && /^\d+\.\s+/.test(lines[index])) { items.push(`<li>${inlineMarkdown(lines[index].replace(/^\d+\.\s+/, ''))}</li>`); index += 1; }
+          output.push(`<ol>${items.join('')}</ol>`); continue;
+        }
+        if (line.startsWith('> ')) { output.push(`<blockquote>${inlineMarkdown(line.slice(2))}</blockquote>`); index += 1; continue; }
+        const paragraph = [line]; index += 1;
+        while (index < lines.length && lines[index].trim() && !/^(#{1,4})\s+/.test(lines[index]) && !/^```/.test(lines[index]) && !/^[-*]\s+/.test(lines[index]) && !/^\d+\.\s+/.test(lines[index]) && !/^\|.*\|$/.test(lines[index])) { paragraph.push(lines[index]); index += 1; }
+        output.push(`<p>${inlineMarkdown(paragraph.join(' '))}</p>`);
+      }
+      return output.join('\n');
+    }
+
+    fetch(sourceFile)
+      .then((response) => { if (!response.ok) throw new Error(`Unable to load ${sourceFile}`); return response.text(); })
+      .then((markdown) => { document.getElementById('document').innerHTML = renderMarkdown(markdown); })
+      .catch((error) => { document.getElementById('document').innerHTML = `<div class="error"><strong>Documentation could not be loaded.</strong><p>${escapeHtml(error.message)}. Start a local static server and open this HTML file through it.</p></div>`; });
+  </script>
+</body>
+</html>

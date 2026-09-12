@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Borrower Copilot</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="brand-block">
+          <div class="brand-mark">BC</div>
+          <div>
+            <h1>Borrower Copilot</h1>
+            <p class="tagline">Borrow smarter.</p>
+          </div>
+        </div>
+      </header>
+
+      <main>
+        <section id="landing-screen" class="screen active">
+          <div class="hero-card">
+            <div class="hero-copy">
+              <p class="eyebrow">Borrowing decision support</p>
+              <h2>Know what you can afford before you negotiate.</h2>
+              <p class="lead">
+                Understand your borrowing range, fair rate and EMI ceiling before you walk into a lender.
+              </p>
+
+              <div class="cta-row">
+                <button id="start-assessment" class="primary-button">Start assessment</button>
+              </div>
+
+              <p class="meta-note">Private by design · No login · No bureau pull · No data stored</p>
+            </div>
+
+            <div class="preview-panel" aria-label="Illustrative borrowing preview">
+              <div class="preview-header">
+                <span class="mini-label">Preview</span>
+                <span class="status-pill positive">Comfortable</span>
+              </div>
+
+              <div class="metric-stack">
+                <div class="mini-metric">
+                  <span>Safe borrowing</span>
+                  <strong>₹6.0L – ₹7.0L</strong>
+                </div>
+                <div class="mini-metric">
+                  <span>Fair rate</span>
+                  <strong>11% – 12.5%</strong>
+                </div>
+                <div class="mini-metric">
+                  <span>EMI ceiling</span>
+                  <strong>₹21,000</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="form-screen" class="screen hidden">
+          <div class="section-header section-header-form">
+            <div>
+              <p class="eyebrow">Borrower assessment</p>
+              <h2>Tell us about your borrowing profile</h2>
+            </div>
+            <div class="progress-block" aria-live="polite">
+              <span class="progress-step">Step 1 of 5</span>
+              <div class="progress-track">
+                <span class="progress-fill" style="width: 20%"></span>
+              </div>
+            </div>
+          </div>
+
+          <form id="borrower-form" novalidate>
+            <div class="form-sections">
+              <div class="question-card section-block">
+                <div class="section-label-row">
+                  <span class="section-index">01</span>
+                  <h3>About you</h3>
+                </div>
+
+                <div class="field-row two-up">
+                  <label>
+                    <span>Age</span>
+                    <input type="number" id="age" name="age" min="18" max="75" required />
+                  </label>
+                  <label>
+                    <span>Loan purpose</span>
+                    <select id="loanPurpose" name="loanPurpose">
+                      <option value="Wedding">Wedding</option>
+                      <option value="Home improvement">Home improvement</option>
+                      <option value="Business expansion">Business expansion</option>
+                      <option value="Education">Education</option>
+                      <option value="Vehicle purchase">Vehicle purchase</option>
+                      <option value="Medical emergency">Medical emergency</option>
+                      <option value="Debt consolidation">Debt consolidation</option>
+                      <option value="Working capital">Working capital</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </label>
+                </div>
+
+                <div class="field-row two-up">
+                  <label>
+                    <span>Loan type</span>
+                    <select id="loanType" name="loanType">
+                      <option value="personal_loan">Personal loan</option>
+                      <option value="home_loan">Home loan</option>
+                      <option value="lap">Loan Against Property (LAP)</option>
+                      <option value="gold_loan">Gold loan</option>
+                      <option value="two_wheeler_loan">Two-wheeler loan</option>
+                      <option value="business_loan">Business loan</option>
+                    </select>
+                  </label>
+                  <label>
+                    <span>Desired loan amount</span>
+                    <input type="number" id="desiredAmount" name="desiredAmount" min="1000" step="1000" required />
+                  </label>
+                </div>
+              </div>
+
+              <div class="question-card section-block">
+                <div class="section-label-row">
+                  <span class="section-index">02</span>
+                  <h3>Your finances</h3>
+                </div>
+
+                <div class="field-row two-up">
+                  <label>
+                    <span>Monthly net income</span>
+                    <input type="number" id="netIncome" name="netIncome" min="0" step="1000" required />
+                  </label>
+                  <label>
+                    <span>Income type</span>
+                    <select id="incomeType" name="incomeType">
+                      <option value="salaried">Salaried</option>
+                      <option value="selfEmployed">Self-employed</option>
+                      <option value="informal">Informal / variable</option>
+                    </select>
+                  </label>
+                </div>
+
+                <div class="field-row two-up">
+                  <label>
+                    <span>Existing monthly EMI</span>
+                    <input type="number" id="existingEMI" name="existingEMI" min="0" step="500" value="0" />
+                  </label>
+                  <label>
+                    <span>Monthly household / living expenses</span>
+                    <input type="number" id="householdExpenses" name="householdExpenses" min="0" step="500" value="0" />
+                  </label>
+                </div>
+
+                <div class="field-row two-up credit-row">
+                  <label>
+                    <span>Credit score, if known</span>
+                    <select id="creditScoreKnown" name="creditScoreKnown">
+                      <option value="unknown">I don't know my credit score</option>
+                      <option value="known">I know my score</option>
+                    </select>
+                  </label>
+                  <label id="creditScoreField" class="hidden">
+                    <span>Exact score</span>
+                    <input type="number" id="creditScore" name="creditScore" min="300" max="900" step="1" />
+                  </label>
+                </div>
+              </div>
+
+              <div class="question-card section-block">
+                <div class="section-label-row">
+                  <span class="section-index">03</span>
+                  <h3>Your borrowing plan</h3>
+                </div>
+
+                <div class="field-row two-up">
+                  <label>
+                    <span>What are you planning to use the loan for?</span>
+                    <select id="loanPurposeSecondary" name="loanPurposeSecondary">
+                      <option value="Wedding">Wedding</option>
+                      <option value="Home improvement">Home improvement</option>
+                      <option value="Business expansion">Business expansion</option>
+                      <option value="Education">Education</option>
+                      <option value="Vehicle purchase">Vehicle purchase</option>
+                      <option value="Medical emergency">Medical emergency</option>
+                      <option value="Debt consolidation">Debt consolidation</option>
+                      <option value="Working capital">Working capital</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </label>
+                  <label>
+                    <span>Is this loan productive or business-linked?</span>
+                    <select id="productiveLoan" name="productiveLoan">
+                      <option value="no">No</option>
+                      <option value="yes">Yes</option>
+                    </select>
+                  </label>
+                </div>
+
+                <div class="field-row two-up">
+                  <label>
+                    <span>Emergency savings in months</span>
+                    <input type="number" id="emergencySavings" name="emergencySavings" min="0" max="24" step="1" />
+                  </label>
+                  <label>
+                    <span>Upcoming large expenses</span>
+                    <select id="upcomingLargeExpenses" name="upcomingLargeExpenses">
+                      <option value="no">No</option>
+                      <option value="yes">Yes</option>
+                    </select>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div id="adaptive-questions" class="adaptive-section hidden">
+              <div class="section-header small">
+                <p class="eyebrow">Additional details</p>
+                <h3>Only the questions relevant to your profile appear here</h3>
+              </div>
+
+              <div class="question-card adaptive-card" data-depends-on="incomeType:salaried">
+                <div class="field-row two-up">
+                  <label>
+                    <span>Employment tenure</span>
+                    <input type="number" id="employmentTenure" name="employmentTenure" min="0" step="1" />
+                  </label>
+                  <label>
+                    <span>Income stability</span>
+                    <select id="incomeStability" name="incomeStability">
+                      <option value="stable">Stable</option>
+                      <option value="moderate">Moderately stable</option>
+                      <option value="volatile">Variable / volatile</option>
+                    </select>
+                  </label>
+                </div>
+                <p class="help-text">Why this matters: income stability changes the affordability buffer and the risk adjustment used in the affordability and rate estimate.</p>
+              </div>
+
+              <div class="question-card adaptive-card" data-depends-on="incomeType:selfEmployed">
+                <div class="field-row two-up">
+                  <label>
+                    <span>Business vintage</span>
+                    <input type="number" id="businessVintage" name="businessVintage" min="0" step="1" />
+                  </label>
+                  <label>
+                    <span>Annual ITR income</span>
+                    <input type="number" id="itrIncome" name="itrIncome" min="0" step="10000" />
+                  </label>
+                </div>
+                <div class="field-row two-up">
+                  <label>
+                    <span>Business income stability</span>
+                    <select id="businessIncomeStability" name="businessIncomeStability">
+                      <option value="stable">Stable</option>
+                      <option value="moderate">Moderately stable</option>
+                      <option value="volatile">Variable</option>
+                    </select>
+                  </label>
+                  <label>
+                    <span>Approximate business profit</span>
+                    <input type="number" id="businessProfit" name="businessProfit" min="0" step="1000" />
+                  </label>
+                </div>
+                <div class="field-row two-up">
+                  <label>
+                    <span>Is collateral available?</span>
+                    <select id="collateralAvailable" name="collateralAvailable">
+                      <option value="no">No</option>
+                      <option value="yes">Yes</option>
+                    </select>
+                  </label>
+                  <label>
+                    <span>Co-applicant income</span>
+                    <input type="number" id="coApplicantIncome" name="coApplicantIncome" min="0" step="1000" value="0" />
+                  </label>
+                </div>
+                <p class="help-text">Why this matters: business vintage, profit and collateral affect the lender's confidence and the suitability of a secured product.</p>
+              </div>
+
+              <div class="question-card adaptive-card" data-depends-on="incomeType:informal">
+                <div class="field-row two-up">
+                  <label>
+                    <span>Income range</span>
+                    <input type="number" id="incomeRangeLow" name="incomeRangeLow" min="0" step="1000" placeholder="Low end" />
+                  </label>
+                  <label>
+                    <span>Income range high</span>
+                    <input type="number" id="incomeRangeHigh" name="incomeRangeHigh" min="0" step="1000" placeholder="High end" />
+                  </label>
+                </div>
+                <div class="field-row two-up">
+                  <label>
+                    <span>Income stability</span>
+                    <select id="informalIncomeStability" name="informalIncomeStability">
+                      <option value="stable">Stable</option>
+                      <option value="moderate">Moderately stable</option>
+                      <option value="volatile">Highly variable</option>
+                    </select>
+                  </label>
+                  <label>
+                    <span>Months with lower income</span>
+                    <input type="number" id="monthsLowIncome" name="monthsLowIncome" min="0" max="12" step="1" />
+                  </label>
+                </div>
+                <p class="help-text">Why this matters: variable-income borrowers need a stricter affordability buffer because cash flow is less predictable.</p>
+              </div>
+
+              <div class="question-card adaptive-card" data-depends-on="existingLoans:true">
+                <div class="field-row two-up">
+                  <label>
+                    <span>Number of active loans</span>
+                    <input type="number" id="activeLoanCount" name="activeLoanCount" min="0" step="1" value="0" />
+                  </label>
+                  <label>
+                    <span>Outstanding loan amount</span>
+                    <input type="number" id="outstandingDebt" name="outstandingDebt" min="0" step="1000" value="0" />
+                  </label>
+                </div>
+                <div class="field-row two-up">
+                  <label>
+                    <span>Overdues or recent EMI bounce</span>
+                    <select id="recentEMIBounce" name="recentEMIBounce">
+                      <option value="no">No</option>
+                      <option value="yes">Yes</option>
+                    </select>
+                  </label>
+                  <label>
+                    <span>Existing debt interest rate</span>
+                    <input type="number" id="existingDebtRate" name="existingDebtRate" min="0" step="0.5" />
+                  </label>
+                </div>
+                <p class="help-text">Why this matters: high existing debt and recent EMI stress directly raise repayment risk and lower safe borrowing.</p>
+              </div>
+
+              <div class="question-card adaptive-card" data-depends-on="collateralAvailable:yes">
+                <div class="field-row two-up">
+                  <label>
+                    <span>Collateral type</span>
+                    <select id="collateralType" name="collateralType">
+                      <option value="property">Property</option>
+                      <option value="gold">Gold</option>
+                      <option value="vehicle">Vehicle</option>
+                      <option value="other">Other</option>
+                    </select>
+                  </label>
+                  <label>
+                    <span>Approximate collateral value</span>
+                    <input type="number" id="collateralValue" name="collateralValue" min="0" step="10000" />
+                  </label>
+                </div>
+                <div class="field-row two-up">
+                  <label>
+                    <span>Already encumbered?</span>
+                    <select id="encumbered" name="encumbered">
+                      <option value="no">No</option>
+                      <option value="yes">Yes</option>
+                    </select>
+                  </label>
+                  <label>
+                    <span>Emergency savings</span>
+                    <input type="number" id="emergencySavingsMonths" name="emergencySavingsMonths" min="0" max="24" step="1" />
+                  </label>
+                </div>
+                <p class="help-text">Why this matters: collateral quality and encumbrance affect loan risk and safe borrowing limits.</p>
+              </div>
+
+              <div class="question-card adaptive-card" data-depends-on="productiveLoan:true">
+                <label>
+                  <span>Expected additional monthly income or profit generated by this loan</span>
+                  <input type="number" id="expectedMonthlyIncome" name="expectedMonthlyIncome" min="0" step="500" />
+                </label>
+                <p class="help-text">Why this matters: if the loan is productive, some of the cash-flow benefit can support a higher borrowing ceiling.</p>
+              </div>
+
+              <div class="question-card adaptive-card" data-depends-on="general:always">
+                <div class="field-row two-up">
+                  <label>
+                    <span>Existing lender offers</span>
+                    <select id="existingLenderOffers" name="existingLenderOffers">
+                      <option value="no">No</option>
+                      <option value="yes">Yes</option>
+                    </select>
+                  </label>
+                  <label>
+                    <span>Loan is for business or productive capacity</span>
+                    <select id="productiveLoanFinal" name="productiveLoanFinal">
+                      <option value="no">No</option>
+                      <option value="yes">Yes</option>
+                    </select>
+                  </label>
+                </div>
+                <p class="help-text">Why this matters: emergency buffer, near-term spending and productive use affect the debt capacity and the final recommendation.</p>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button type="button" id="back-button" class="secondary-button">Back</button>
+              <button type="submit" class="primary-button">Assess borrowing fit</button>
+            </div>
+          </form>
+        </section>
+
+        <section id="results-screen" class="screen hidden">
+          <div class="section-header result-header">
+            <div>
+              <p class="eyebrow">Assessment summary</p>
+              <h2>YOUR BORROWING ASSESSMENT</h2>
+            </div>
+            <p class="result-trust">Private by design · Local only</p>
+          </div>
+
+          <div id="result-panel" class="result-panel">
+            <div class="result-card primary-result recommendation-card">
+              <div class="recommendation-head">
+                <span class="recommendation-label">Primary recommendation</span>
+                <span id="confidence-badge" class="confidence-badge medium">Confidence: Medium</span>
+              </div>
+              <h3 id="primary-recommendation">BORROW</h3>
+              <p id="recommendation-explanation" class="result-copy"></p>
+            </div>
+
+            <div class="summary-grid">
+              <div class="summary-card accent-card">
+                <p class="result-label">Safe amount</p>
+                <h4 id="safe-range">₹0</h4>
+                <p id="safe-note" class="result-copy"></p>
+              </div>
+
+              <div class="summary-card">
+                <p class="result-label">Likely lender sanction</p>
+                <h4 id="lender-range">₹0</h4>
+                <p id="lender-note" class="result-copy"></p>
+              </div>
+
+              <div class="summary-card">
+                <p class="result-label">Fair interest rate</p>
+                <h4 id="fair-rate-range">0.0% – 0.0%</h4>
+                <p id="fair-rate-note" class="result-copy"></p>
+              </div>
+
+              <div class="summary-card">
+                <p class="result-label">EMI ceiling</p>
+                <h4 id="recommended-emi">₹0</h4>
+                <p id="emi-why" class="result-copy"></p>
+              </div>
+            </div>
+
+            <div class="info-grid">
+              <div class="result-card info-card">
+                <div class="info-card-head">
+                  <p class="result-label">Why this range?</p>
+                  <button class="ghost-toggle" type="button">Expand</button>
+                </div>
+                <div class="info-body">
+                  <ul id="key-reasons" class="reason-list"></ul>
+                </div>
+              </div>
+
+              <div class="result-card info-card">
+                <p class="result-label">Stress test</p>
+                <h4 id="stress-status">Within tolerance</h4>
+                <p id="stress-copy" class="result-copy"></p>
+              </div>
+
+              <div class="result-card info-card full-span">
+                <p class="result-label">Estimated APR</p>
+                <h4 id="apr-range">0.0% – 0.0%</h4>
+                <p id="apr-note" class="result-copy"></p>
+                <div id="tenure-tradeoff" class="tradeoff-box"></div>
+              </div>
+            </div>
+          </div>
+
+          <div id="negotiation-card" class="negotiation-card print-card">
+            <div class="card-header-row">
+              <div>
+                <p class="eyebrow">Borrower negotiation card</p>
+                <h3>YOUR NEGOTIATION CARD</h3>
+              </div>
+              <button id="print-card" class="secondary-button small-button" type="button">Print / Save</button>
+            </div>
+
+            <div class="card-grid">
+              <div class="card-item"><span>Loan type</span><strong id="card-loan-type">-</strong></div>
+              <div class="card-item"><span>Requested amount</span><strong id="card-requested-amount">-</strong></div>
+              <div class="card-item"><span>Recommended borrowing range</span><strong id="card-safe-range">-</strong></div>
+              <div class="card-item"><span>Likely lender sanction range</span><strong id="card-sanction-range">-</strong></div>
+              <div class="card-item"><span>Fair interest rate</span><strong id="card-rate-range">-</strong></div>
+              <div class="card-item"><span>Estimated all-in APR</span><strong id="card-apr-range">-</strong></div>
+              <div class="card-item"><span>Recommended maximum EMI</span><strong id="card-emi">-</strong></div>
+              <div class="card-item full"><span>Why this range</span><strong id="card-reasons">-</strong></div>
+              <div class="card-item full"><span>Suggested negotiation statement</span><strong id="card-negotiation-statement">-</strong></div>
+            </div>
+            <p class="card-footnote">Assessment only — not a lender sanction.</p>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script type="module" src="app.js"></script>
+  </body>
+</html>
